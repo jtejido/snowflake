@@ -8,9 +8,9 @@
 package single
 
 import (
-	"github.com/jtejido/snowflake"
 	"errors"
 	"fmt"
+	"github.com/jtejido/snowflake"
 	"strconv"
 	"sync"
 	"time"
@@ -18,21 +18,19 @@ import (
 
 var (
 	nodeIdBits uint8 = 10
-	maxNodeId   int64 = -1 ^ (-1 << nodeIdBits)
+	maxNodeId  int64 = -1 ^ (-1 << nodeIdBits)
 
 	sequenceBits uint8 = 12
-	maxSequenceBits uint8 = -1 ^ (-1 << sequenceBits)
 
 	nodeIdShift uint8 = sequenceBits
-	nodeMask  int64 = maxNodeId << sequenceBits
+	nodeMask    int64 = maxNodeId << sequenceBits
 
 	timestampLeftShift uint8 = sequenceBits + nodeIdBits
 
-	sequenceMask int64 = -1 ^ (-1 << sequenceBits)
+	sequenceMask  int64 = -1 ^ (-1 << sequenceBits)
 	lastTimeStamp int64 = -1
 )
 
-// A JSONSyntaxError is returned from UnmarshalJSON if an invalid ID is provided.
 type JSONSyntaxError struct{ original []byte }
 
 func (j JSONSyntaxError) Error() string {
@@ -43,45 +41,45 @@ var (
 	ErrInvalidNode = errors.New("node Id must be between 0 and " + strconv.FormatInt(maxNodeId, 10))
 	ErrForwardTime = errors.New("You wish to generate new ID. use NextID() instead.")
 )
+
 type singleWorker struct {
-	mu   sync.RWMutex
+	mu            sync.RWMutex
 	lastTimeStamp int64
-	nodeID int64
-	sequence int64
+	nodeID        int64
+	sequence      int64
 }
 
 type SingleWorkerID int64
 
 func New(nodeID int64) (*singleWorker, error) {
 
-	if (nodeID > maxNodeId || nodeID < 0) {
+	if nodeID > maxNodeId || nodeID < 0 {
 		return nil, ErrInvalidNode
 	}
 
 	return &singleWorker{
 		lastTimeStamp: 0,
-		nodeID: nodeID,
-		sequence: 0,
+		nodeID:        nodeID,
+		sequence:      0,
 	}, nil
 }
 
 // GetID gets the corresponding ID given a timestamp and sequence
 func (n *singleWorker) GetID(t time.Time, s int64) (id SingleWorkerID, err error) {
- 	
- 	n.mu.Lock()
+
+	n.mu.Lock()
 
 	now := t.UnixNano() / 1000000
 
 	if n.lastTimeStamp != 0 && now > n.lastTimeStamp {
-      	return SingleWorkerID(0), ErrForwardTime
-    }
+		return SingleWorkerID(0), ErrForwardTime
+	}
 
-    // no prior knowledge of how many times an id has been generated for the same ms, store id.sequence() to be used here
-    // TO-DO: get all IDs up to maxSequenceBits? (O(n) where n is maxSequenceBits)
-	id = SingleWorkerID((now-snowflake.TW_EPOCH)<<timestampLeftShift | 
+	// no prior knowledge of how many times an id has been generated for the same ms, store id.sequence() to be used here
+	// TO-DO: get all IDs up to maxSequenceBits? (O(n) where n is maxSequenceBits)
+	id = SingleWorkerID((now-snowflake.TW_EPOCH)<<timestampLeftShift |
 		(n.nodeID << nodeIdShift) |
 		s)
-
 
 	n.mu.Unlock()
 
@@ -92,7 +90,7 @@ func (n *singleWorker) GetID(t time.Time, s int64) (id SingleWorkerID, err error
 func (n singleWorker) LastTimeStamp() time.Time {
 	n.mu.RLock()
 	defer n.mu.RUnlock()
-	return time.Unix(0, n.lastTimeStamp * 1000000)
+	return time.Unix(0, n.lastTimeStamp*1000000)
 }
 
 // NextID creates and returns a unique snowflake ID
@@ -103,8 +101,8 @@ func (n *singleWorker) NextID() (id SingleWorkerID, err error) {
 	now := time.Now().UnixNano() / 1000000
 
 	if now < n.lastTimeStamp {
-      	return SingleWorkerID(0), fmt.Errorf("Clock moved backwards. Refusing to generate id for %d milliseconds", n.lastTimeStamp - now)
-    }
+		return SingleWorkerID(0), fmt.Errorf("Clock moved backwards. Refusing to generate id for %d milliseconds", n.lastTimeStamp-now)
+	}
 
 	if n.lastTimeStamp == now {
 		n.sequence = (n.sequence + 1) & sequenceMask
@@ -118,7 +116,7 @@ func (n *singleWorker) NextID() (id SingleWorkerID, err error) {
 
 	n.lastTimeStamp = now
 
-	id = SingleWorkerID((now-snowflake.TW_EPOCH)<<timestampLeftShift | 
+	id = SingleWorkerID((now-snowflake.TW_EPOCH)<<timestampLeftShift |
 		(n.nodeID << nodeIdShift) |
 		n.sequence)
 

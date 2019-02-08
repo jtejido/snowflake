@@ -1,6 +1,8 @@
 # Snowflake
 Twitter's [Snowflake](https://developer.twitter.com/en/docs/basics/twitter-ids.html): A time-based unique ID generation algorithm ported to Golang
 
+This doesn't implement a server, just the algorithm.
+
 
 ## From their README:
 
