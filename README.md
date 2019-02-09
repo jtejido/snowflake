@@ -1,4 +1,7 @@
-# Snowflake
+### Snowflake
+
+<a href="https://travis-ci.org/jtejido/snowflake"><img src="https://img.shields.io/travis/jtejido/snowflake.svg?style=flat-square" alt="Build Status"></a>
+
 Twitter's [Snowflake](https://developer.twitter.com/en/docs/basics/twitter-ids.html): A time-based unique ID generation algorithm ported to Golang
 
 This doesn't implement a server, just the algorithm.
