@@ -1,6 +1,8 @@
 ### Snowflake
 
-<a href="https://travis-ci.org/jtejido/snowflake"><img src="https://img.shields.io/travis/jtejido/snowflake.svg?style=flat-square" alt="Build Status"></a>
+[![Build Status](https://travis-ci.org/jtejido/snowflake.svg?branch=master)](https://travis-ci.org/jtejido/snowflake) 
+[![codecov](https://codecov.io/gh/jtejido/snowflake/branch/master/graph/badge.svg)](https://codecov.io/gh/jtejido/snowflake)
+[![MIT license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Twitter's [Snowflake](https://developer.twitter.com/en/docs/basics/twitter-ids.html): A time-based unique ID generation algorithm ported to Golang
 
