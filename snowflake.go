@@ -10,7 +10,7 @@ import "time"
 const TW_EPOCH int64 = 1288834974657
 
 type Node interface {
-	GetID(t time.Time) (ID, error)
+	GetID(t time.Time, s int64) (ID, error)
 	LastTimeStamp() time.Time
 	NextID() (ID, error)
 }

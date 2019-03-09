@@ -76,7 +76,6 @@ func (n *singleWorker) GetID(t time.Time, s int64) (id SingleWorkerID, err error
 	}
 
 	// no prior knowledge of how many times an id has been generated for the same ms, store id.sequence() to be used here
-	// TO-DO: get all IDs up to maxSequenceBits? (O(n) where n is maxSequenceBits)
 	id = SingleWorkerID((now-snowflake.TW_EPOCH)<<timestampLeftShift |
 		(n.nodeID << nodeIdShift) |
 		s)

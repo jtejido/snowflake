@@ -82,7 +82,6 @@ func (n *multiWorker) GetID(t time.Time, s int64) (id MultiWorkerID, err error) 
 	}
 
 	// no prior knowledge of how many times an id has been generated for the same ms, store id.sequence() to be used here
-	// TO-DO: get all IDs up to maxSequenceBits? (O(n) where n is maxSequenceBits)
 	id = MultiWorkerID((now-snowflake.TW_EPOCH)<<timestampLeftShift |
 		(n.datacenterId << datacenterIdShift) |
 		(n.nodeID << nodeIdShift) |
